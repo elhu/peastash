@@ -58,17 +58,19 @@ require 'buchestache/middleware'
 use Buchestache::Middleware
 ```
 
-By default, the middleware only adds the ``duration`` and ``status`` fields to the log entry. To add more information, you can:
-
-* Put anything in the store by calling ``Buchestache.store``
-* Give a block argument to ``use``, that will be called with the request env and the Rack response in parameter. For example:
+By default, the middleware only adds the ``duration`` and ``status`` fields to the log entry.
+In addition to using ``Buchestache.store`` to add information, you can pass one or two block arguments to ``use``, that will be called with the request env and the Rack response in parameter.
+The first block will be called **before** the request (with a dummy ``[200, {}, Rack::Response.new]`` response), while the second one will be called **after**. For example:
 
 ```ruby
 require 'buchestache/middleware'
-block = ->(env, response) { Buchestache.store[:path] = Rack::Request.new(env).path }
-use Buchestache::Middleware, &block
-# Will add 'path' to the list of fields.
+before_block = ->(env, response) { Buchestache.store[:path] = Rack::Request.new(env).path }
+after_block = ->(env, response) { Buchestache.store[:headers] = response[1] }
+use Buchestache::Middleware, before_block, after_block
+# Will add 'path' and headers to the list of fields.
 ```
+
+Any instance variable you set in ``before_block`` will be available in ``after_block``, but those instances variables **WILL NOT** be reset at the end of the request.
 
 ### But I want to use it in Rails!
 

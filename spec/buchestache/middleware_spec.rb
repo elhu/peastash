@@ -2,11 +2,12 @@ require 'spec_helper'
 require 'buchestache/middleware'
 
 describe Buchestache::Middleware do
-  let(:app) { ->(env) { [200, env, "app"] } }
-  let(:block) { ->(env, response) {  } }
+  let(:app) { ->(env) { [200, {}, "app"] } }
+  let(:before_block) { ->(env, response) {  } }
+  let(:after_block) { ->(env, response) {  } }
 
   let(:middleware) do
-    Buchestache::Middleware.new(app, &block)
+    Buchestache::Middleware.new(app, before_block, after_block)
   end
 
   describe "Rack middleware" do
@@ -21,7 +22,8 @@ describe Buchestache::Middleware do
     end
 
     it "calls whatever block is given to the middleware" do
-      expect(block).to receive(:call)
+      expect(before_block).to receive(:call)
+      expect(after_block).to receive(:call)
       code, env = middleware.call env_for('/')
     end
 
@@ -31,7 +33,7 @@ describe Buchestache::Middleware do
           request = Rack::Request.new(env)
           Buchestache.store[:path] = request.path
         }
-        @middleware = Buchestache::Middleware.new(app, &block)
+        @middleware = Buchestache::Middleware.new(app, block)
       end
 
       it "can store arbitrary data in the Buchestache store" do
@@ -54,9 +56,9 @@ describe Buchestache::Middleware do
         app = ->(env) do
           request = Rack::Request.new(env)
           Buchestache.store[:scheme] = request.scheme
-          [200, env, "app"]
+          [200, {}, "app"]
         end
-        @middleware = Buchestache::Middleware.new(app, &block)
+        @middleware = Buchestache::Middleware.new(app, before_block)
       end
 
       it "can store arbitrary data in the Buchestache store" do
@@ -80,6 +82,21 @@ describe Buchestache::Middleware do
         expect {
           @middleware.call env_for('/')
         }.to_not raise_error
+      end
+    end
+
+    context 'persistence between before/after block' do
+      it "saves instance variables between before/after block" do
+        before_block = ->(env, request) { @foo = 'foo' }
+        after_block = ->(env, request) { Buchestache.store[:foo] = @foo }
+        @middleware = Buchestache::Middleware.new(app, before_block, after_block)
+
+        expect(LogStash::Event).to receive(:new).with({
+          '@source' => Buchestache::STORE_NAME,
+          '@fields' => { duration: 0, status: 200, foo: 'foo' },
+          '@tags' => []
+        })
+        Timecop.freeze { @middleware.call env_for('/') }
       end
     end
 
