@@ -100,6 +100,17 @@ describe Buchestache::Middleware do
       end
     end
 
+    context "exception in before / after block" do
+      it "doesn't interrupt the middleware flow, logging should be transparent" do
+        before_block = ->(env, request) { 1 / 0 }
+        before_block = ->(env, request) { "".unknown_method }
+        @middleware = Buchestache::Middleware.new(app)
+        expect {
+          @middleware.call env_for('/')
+        }.to_not raise_error
+      end
+    end
+
   end
 
   def env_for(url, opts={})

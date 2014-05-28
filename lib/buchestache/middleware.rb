@@ -10,14 +10,18 @@ class Buchestache
       response = [200, {}, Rack::Response.new]
       Buchestache.log do
         start = Time.now
-        @before_block.call(env, response) if @before_block
+        if @before_block
+          @before_block.call(env, response) rescue nil
+        end
 
         response = @app.call(env)
 
         Buchestache.store[:duration] = Time.now - start
         Buchestache.store[:status] = response.first
 
-        @after_block.call(env, response) if @after_block
+        if @after_block
+          @after_block.call(env, response) rescue nil
+        end
       end
       response
     end

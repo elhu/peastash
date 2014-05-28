@@ -47,7 +47,7 @@ describe Buchestache do
     end
   end
 
-  describe "#foo" do
+  describe "#log" do
     context "Buchestache not configured" do
       it "calls #configure! beforehand" do
         expect(Buchestache).to receive(:configure!).once.and_call_original
