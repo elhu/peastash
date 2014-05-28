@@ -18,14 +18,19 @@ class Buchestache
       @configured = true
     end
 
-    def log(tags = [])
+    def log(additional_tags = [])
       configure! unless configured?
+      tags.replace(additional_tags)
       store.clear
       yield
       if !store.empty? || dump_if_empty?
         event = build_event(@source, tags)
         @output.dump(event)
       end
+    end
+
+    def tags
+      Thread.current[@store_name + ":tags"] ||= []
     end
 
     private

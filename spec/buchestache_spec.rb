@@ -99,4 +99,19 @@ describe Buchestache do
     end
   end
 
+  describe "#tags" do
+    it "makes it possible to add tags from within the #log block" do
+      base_tags = %w(foo bar)
+      tags = %w(baz)
+      additional_tags = %w(qux)
+      Buchestache.configure!(tags: base_tags)
+      expect(LogStash::Event).to receive(:new).with({
+        '@source' => Buchestache::STORE_NAME,
+        '@fields' => {},
+        '@tags' => base_tags + tags + additional_tags
+      })
+      Buchestache.log(tags) { Buchestache.tags.concat(additional_tags) }
+    end
+  end
+
 end
