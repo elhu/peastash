@@ -33,8 +33,8 @@ end
 ```ruby
 Buchestache.configure!({
   source: 'buchestache', # This value will be used for the @source field of the logstash event
+  # Any tag you wish to find in Logstash later (tags passed as argument to #log are added).
   tags: [], # Defaults to [].
-  Any tag you wish to find in Logstash later (tags passed as argument to #log are added).
   # Dumps to STDOUT by default. Any object answering to the dump method
   output: Buchestache::Outputs::IO.new('/tmp/buchestache.log'),
   store_name: 'buchestache', # The key used to reference the store in the Thread.current
@@ -58,7 +58,7 @@ require 'buchestache/middleware'
 use Buchestache::Middleware
 ```
 
-By default, the middleware only adds the ``duration`` and ``status`` fields to the log entry.
+By default, the middleware only adds the ``duration``, ``status`` and ``hostname`` (machine name) fields to the log entry.
 In addition to using ``Buchestache.store`` to add information, you can pass one or two block arguments to ``use``, that will be called with the request env and the Rack response in parameter.
 The first block will be called **before** the request (with a dummy ``[200, {}, Rack::Response.new]`` response), while the second one will be called **after**. For example:
 
@@ -76,6 +76,23 @@ Any instance variable you set in ``before_block`` will be available in ``after_b
 
 Simmer down, it's coming! For now, you can use it in Rails like you would use it in any other Rack app.
 Soon, you'll be able to just include it in your Gemfile, and start logging to Logstash right after!
+
+### Playing with tags
+There are three ways to tag your log entries in Buchestache.
+
+* The first one is through configuration (see above).
+* The second one is by passing tags to the ``Buchestache.log`` method.
+* The last one is to call the ``Buchestache.tags`` method from within a ``Buchestache.log`` block. Tags defined with this method are not persistent and will disappear at the next call to ``Buchestache.log``
+
+For example:
+
+```ruby
+Buchestache.configure!(tags: 'foo')
+Buchestache.log(['bar']) { Buchestache.tags << 'baz' }
+# Tags are ['foo', 'bar', 'baz']
+Buchestache.log(['bar']) { Buchestache.tags << 'qux' }
+# Tags are ['foo', 'bar', 'qux']
+```
 
 ## Contributing
 

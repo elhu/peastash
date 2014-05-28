@@ -1,3 +1,5 @@
+require 'socket'
+
 class Buchestache
   class Middleware
     def initialize(app, before_block = nil, after_block = nil)
@@ -10,6 +12,8 @@ class Buchestache
       response = [200, {}, Rack::Response.new]
       Buchestache.log do
         start = Time.now
+        @hostname ||= Socket.gethostname
+
         if @before_block
           begin
             @before_block.call(env, response)
@@ -22,6 +26,7 @@ class Buchestache
 
         Buchestache.store[:duration] = Time.now - start
         Buchestache.store[:status] = response.first
+        Buchestache.store[:hostname] = @hostname
 
         if @after_block
           begin

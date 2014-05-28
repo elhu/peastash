@@ -2,6 +2,7 @@ require 'spec_helper'
 require 'buchestache/middleware'
 
 describe Buchestache::Middleware do
+  before { Socket.stub(:gethostname) { 'example.com' } }
   let(:app) { ->(env) { [200, {}, "app"] } }
   let(:before_block) { ->(env, response) {  } }
   let(:after_block) { ->(env, response) {  } }
@@ -44,7 +45,7 @@ describe Buchestache::Middleware do
       it 'uses the stored data to build the event' do
         expect(LogStash::Event).to receive(:new).with({
           '@source' => Buchestache::STORE_NAME,
-          '@fields' => { path: '/', duration: 0, status: 200 },
+          '@fields' => { path: '/', duration: 0, status: 200, hostname: 'example.com' },
           '@tags' => []
         })
         Timecop.freeze { @middleware.call env_for('/') }
@@ -69,7 +70,7 @@ describe Buchestache::Middleware do
       it 'uses the stored data to build the event' do
         expect(LogStash::Event).to receive(:new).with({
           '@source' => Buchestache::STORE_NAME,
-          '@fields' => { scheme: 'http', duration: 0, status: 200 },
+          '@fields' => { scheme: 'http', duration: 0, status: 200, hostname: 'example.com' },
           '@tags' => []
         })
         Timecop.freeze { @middleware.call env_for('/') }
@@ -93,8 +94,8 @@ describe Buchestache::Middleware do
 
         expect(LogStash::Event).to receive(:new).with({
           '@source' => Buchestache::STORE_NAME,
-          '@fields' => { duration: 0, status: 200, foo: 'foo' },
-          '@tags' => []
+          '@fields' => { duration: 0, status: 200, foo: 'foo', hostname: 'example.com' },
+          '@tags' => [],
         })
         Timecop.freeze { @middleware.call env_for('/') }
       end
