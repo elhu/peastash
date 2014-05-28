@@ -101,13 +101,23 @@ describe Buchestache::Middleware do
     end
 
     context "exception in before / after block" do
-      it "doesn't interrupt the middleware flow, logging should be transparent" do
+      before :each do
         before_block = ->(env, request) { 1 / 0 }
-        before_block = ->(env, request) { "".unknown_method }
-        @middleware = Buchestache::Middleware.new(app)
+        after_block = ->(env, request) { unknown_method }
+        @middleware = Buchestache::Middleware.new(app, before_block, after_block)
+        STDERR.stub(:puts)
+      end
+      after(:each) { STDERR.unstub(:puts) }
+
+      it "doesn't interrupt the middleware flow, logging should be transparent" do
         expect {
           @middleware.call env_for('/')
         }.to_not raise_error
+      end
+
+      it "puts the error to STDERR for easy debugging" do
+        expect(STDERR).to receive(:puts).twice
+        @middleware.call env_for('/')
       end
     end
 

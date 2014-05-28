@@ -11,7 +11,11 @@ class Buchestache
       Buchestache.log do
         start = Time.now
         if @before_block
-          @before_block.call(env, response) rescue nil
+          begin
+            @before_block.call(env, response)
+          rescue StandardError => e
+            STDERR.puts e
+          end
         end
 
         response = @app.call(env)
@@ -20,7 +24,11 @@ class Buchestache
         Buchestache.store[:status] = response.first
 
         if @after_block
-          @after_block.call(env, response) rescue nil
+          begin
+            @after_block.call(env, response)
+          rescue StandardError => e
+            STDERR.puts e
+          end
         end
       end
       response
