@@ -35,7 +35,9 @@ describe Buchestache::Railtie do
   end
 end
 
-def run_with_env(env = 'test', &block)
+def run_with_env(env = 'test')
+  # Can't run those tests on jruby... yet
+  return if RUBY_PLATFORM == 'java'
   fork do
     SimpleCov.running = false
     ENV['RAILS_ENV'] = env
