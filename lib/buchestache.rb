@@ -1,5 +1,6 @@
 require 'buchestache/outputs/io'
 require 'logstash/event'
+require 'buchestache/rails_ext' if defined?(Rails)
 
 class Buchestache
   STORE_NAME = 'buchestache'

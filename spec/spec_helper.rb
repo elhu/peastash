@@ -1,9 +1,11 @@
 $:.unshift File.expand_path('../lib', __FILE__)
 
+ENV['RACK_ENV'] = 'test'
+ENV['RAILS_ENV'] = 'test'
+
 require 'timecop'
 require 'simplecov'
 require 'rack/test'
-SimpleCov.start
 
 require 'buchestache'
 
