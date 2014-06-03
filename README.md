@@ -83,6 +83,18 @@ config.buchestache.output = Buchestache::Outputs::IO.new(File.join(Rails.root, '
 config.buchestache.source = Rails.application.class.parent_name
 ```
 
+By default, Buchestache's Rails integration will log the same parameters as the Middleware version, plus the fields in the payload of the [``process_action.action_controller``](http://edgeguides.rubyonrails.org/active_support_instrumentation.html#process_action.action_controller) notification (except the params).
+
+#### Logging request parameters
+
+To enable parameter logging, you must add the following to your configuration:
+
+```ruby
+config.buchestache.log_parameters = true
+```
+
+Be careful, as this can significantly increase the size of the log entries, as well as causing problem if other Logstash entries have the same field with a different data type.
+
 #### Listening to ``ActiveSupport::Notifications``
 Additionaly, you can use Buchestache to aggregate data from any ``ActiveSupport::Notifications``:
 

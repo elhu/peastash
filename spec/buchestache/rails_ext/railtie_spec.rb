@@ -23,14 +23,35 @@ describe Buchestache::Railtie do
       require 'dummy/config/environment'
     end
 
+    before(:each) { Buchestache.store.clear }
+
     it "adds the middleware" do
       expect(Rails.application.middleware).to include(Buchestache::Middleware)
     end
 
     it "adds a subscriber on 'process_action.action_controller' to gather metrics about the request" do
-      Buchestache.store.clear
       ActiveSupport::Notifications.instrument('process_action.action_controller', db_runtime: 1)
       expect(Buchestache.store).to include(db_runtime: 1)
+    end
+
+    context "params logging" do
+      it "doesn't log the parameters if log_parameters isn't true" do
+        Buchestache.configuration[:log_parameters] = false
+        Rails.application.call env_for('/')
+        expect(Buchestache.store.keys).to_not include(:params)
+      end
+
+      it "logs the parameters if log_parameters is true" do
+        Buchestache.configuration[:log_parameters] = true
+        Rails.application.call env_for('/')
+        expect(Buchestache.store.keys).to include(:params)
+      end
+
+      it "doesn't log filtered parameters in clear text" do
+        Buchestache.configuration[:log_parameters] = true
+        Rails.application.call env_for('/?password=foo')
+        expect(Buchestache.store[:params]["password"]).to eq("[FILTERED]")
+      end
     end
   end
 end
