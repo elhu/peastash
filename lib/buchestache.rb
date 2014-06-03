@@ -1,15 +1,19 @@
 require 'buchestache/outputs/io'
 require 'logstash/event'
+require 'buchestache/rails_ext' if defined?(Rails)
 
 class Buchestache
   STORE_NAME = 'buchestache'
 
   class << self
+    attr_accessor :configuration
+
     def store
       Thread.current[@store_name] ||= Hash.new { |hash, key| hash[key] = {} }
     end
 
     def configure!(conf = {})
+      self.configuration = conf
       @source = conf[:source] || STORE_NAME
       @base_tags = [conf[:tags] || []].flatten
       @output = conf[:output] || Outputs::IO.new(Outputs::IO::default_io)

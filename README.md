@@ -44,7 +44,7 @@ Buchestache.configure!({
 
 #### Outputs
 
-Buchestache ships with a single output: ``Buchestache::Outputs.IO``. It can be initialized either by passing it path or an IO object.
+Buchestache ships with a single output: ``Buchestache::Outputs::IO``. It can be initialized either by passing it path or an IO object.
 Buchestache can easily be extended to output to any target.
 Simply configure Buchestache's output with an object that responds to the ``#dump`` method. This method will be called at the end of the ``#log`` block, with 1 argument : a ``LogStash::Event`` object, that you will probably need to serialize to json.
 
@@ -74,8 +74,53 @@ Any instance variable you set in ``before_block`` will be available in ``after_b
 
 ### But I want to use it in Rails!
 
-Simmer down, it's coming! For now, you can use it in Rails like you would use it in any other Rack app.
-Soon, you'll be able to just include it in your Gemfile, and start logging to Logstash right after!
+It's easy! Simply add Buchestache to your Gemfile, and add the following to the configure block of either ``config/environment.rb`` or ``config/<RAILS_ENV>.rb``:
+
+```ruby
+config.buchestache.enabled = true
+# You can also configure Buchestache from here, for example:
+config.buchestache.output = Buchestache::Outputs::IO.new(File.join(Rails.root, 'log', "logstash_#{Rails.env}.log"))
+config.buchestache.source = Rails.application.class.parent_name
+```
+
+By default, Buchestache's Rails integration will log the same parameters as the Middleware version, plus the fields in the payload of the [``process_action.action_controller``](http://edgeguides.rubyonrails.org/active_support_instrumentation.html#process_action.action_controller) notification (except the params).
+
+#### Logging request parameters
+
+To enable parameter logging, you must add the following to your configuration:
+
+```ruby
+config.buchestache.log_parameters = true
+```
+
+Be careful, as this can significantly increase the size of the log entries, as well as causing problem if other Logstash entries have the same field with a different data type.
+
+#### Listening to ``ActiveSupport::Notifications``
+Additionaly, you can use Buchestache to aggregate data from any ``ActiveSupport::Notifications``:
+
+```ruby
+# In config/initializers/buchestache.rb
+if defined?(Buchestache.watch)
+  Buchestache.watch('request.rsolr', event_group: 'solr') do |name, start, finish, id, payload, event_store|
+    event_store[:queries] = event_store[:queries].to_i.succ
+    event_store[:duration] = event_store[:duration].to_f + ((finish - start) * 1000)
+  end
+end
+# This will add something like the following to the log entry fields
+# {'request.rsolr': {'queries': 1, 'duration': 42}}
+```
+
+The store exposed to the blocked passed to watch is thread-safe, and reset after each request. By default, the store is only shared between occurences of the same event. You can easily share the same store between different types of notifications by assigning them to the same event group:
+
+```ruby
+Buchestache.watch('foo.notification', event_group: 'notification') do |*args, store|
+  # Shared store with 'bar.notification'
+end
+
+Buchestache.watch('bar.notification', event_group: 'notification') do |*args, store|
+  # Shared store with 'foo.notification'
+end
+```
 
 ### Playing with tags
 There are three ways to tag your log entries in Buchestache.
