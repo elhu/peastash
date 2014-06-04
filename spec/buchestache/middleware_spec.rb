@@ -1,11 +1,12 @@
 require 'spec_helper'
 require 'buchestache/middleware'
+require 'pry'
 
 describe Buchestache::Middleware do
   before { Socket.stub(:gethostname) { 'example.com' } }
   let(:app) { ->(env) { [200, {}, "app"] } }
-  let(:before_block) { ->(env, response) {  } }
-  let(:after_block) { ->(env, response) {  } }
+  let(:before_block) { ->(env, response) {} }
+  let(:after_block) { ->(env, response) {} }
 
   let(:middleware) do
     Buchestache::Middleware.new(app, before_block, after_block)
@@ -23,9 +24,13 @@ describe Buchestache::Middleware do
     end
 
     it "calls whatever block is given to the middleware" do
-      expect(before_block).to receive(:call)
-      expect(after_block).to receive(:call)
+      before_block = ->(env, response) { Buchestache.store[:before_block] = true }
+      after_block = ->(env, response) { Buchestache.store[:after_block] = true }
+
+      middleware = Buchestache::Middleware.new(app, before_block, after_block)
       code, env = middleware.call env_for('/')
+      expect(Buchestache.store[:before_block]).to be true
+      expect(Buchestache.store[:after_block]).to be true
     end
 
     context 'storing data in the custom block' do
@@ -120,6 +125,14 @@ describe Buchestache::Middleware do
         expect(STDERR).to receive(:puts).twice
         @middleware.call env_for('/')
       end
+    end
+
+    it "doesn't catch exception in the app" do
+      app = ->(env) { raise }
+      @middleware = Buchestache::Middleware.new(app)
+      expect {
+        @middleware.call env_for('/')
+      }.to raise_error
     end
 
   end

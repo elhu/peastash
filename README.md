@@ -59,8 +59,8 @@ use Buchestache::Middleware
 ```
 
 By default, the middleware only adds the ``duration``, ``status`` and ``hostname`` (machine name) fields to the log entry.
-In addition to using ``Buchestache.store`` to add information, you can pass one or two block arguments to ``use``, that will be called with the request env and the Rack response in parameter.
-The first block will be called **before** the request (with a dummy ``[200, {}, Rack::Response.new]`` response), while the second one will be called **after**. For example:
+In addition to using ``Buchestache.store`` to add information, you can pass one or two block arguments to ``use``, that will be called with the request env and the Rack response in parameter, in the context of the Middleware's instance.
+The first block will be called **before** the request (with a ``response = nil``), while the second one will be called **after**, with the actual response. For example:
 
 ```ruby
 require 'buchestache/middleware'

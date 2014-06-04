@@ -4,23 +4,17 @@ class Buchestache
   class Middleware
     def initialize(app, before_block = nil, after_block = nil)
       @app = app
-      @before_block = before_block
-      @after_block = after_block
+      define_singleton_method(:before_block, before_block || ->(_, _) {})
+      define_singleton_method(:after_block, after_block || ->(_, _) {})
     end
 
     def call(env)
-      response = [200, {}, Rack::Response.new]
+      response = nil
       Buchestache.log do
         start = Time.now
         @hostname ||= Socket.gethostname
 
-        if @before_block
-          begin
-            @before_block.call(env, response)
-          rescue StandardError => e
-            STDERR.puts e
-          end
-        end
+        safe_call { before_block(env, response) }
 
         response = @app.call(env)
 
@@ -28,15 +22,16 @@ class Buchestache
         Buchestache.store[:status] = response.first
         Buchestache.store[:hostname] = @hostname
 
-        if @after_block
-          begin
-            @after_block.call(env, response)
-          rescue StandardError => e
-            STDERR.puts e
-          end
-        end
+        safe_call { after_block(env, response) }
       end
       response
+    end
+
+    private
+    def safe_call
+      yield
+    rescue StandardError => e
+      STDERR.puts e
     end
   end
 end
