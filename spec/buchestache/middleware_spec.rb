@@ -14,7 +14,7 @@ describe Buchestache::Middleware do
 
   describe "Rack middleware" do
     it "wraps the call to the next middleware in a Buchestache block" do
-      expect(Buchestache).to receive(:log)
+      expect(Buchestache.instance).to receive(:log)
       middleware.call env_for('/')
     end
 
@@ -24,27 +24,27 @@ describe Buchestache::Middleware do
     end
 
     it "calls whatever block is given to the middleware" do
-      before_block = ->(env, response) { Buchestache.store[:before_block] = true }
-      after_block = ->(env, response) { Buchestache.store[:after_block] = true }
+      before_block = ->(env, response) { Buchestache.instance.store[:before_block] = true }
+      after_block = ->(env, response) { Buchestache.instance.store[:after_block] = true }
 
       middleware = Buchestache::Middleware.new(app, before_block, after_block)
       code, env = middleware.call env_for('/')
-      expect(Buchestache.store[:before_block]).to be true
-      expect(Buchestache.store[:after_block]).to be true
+      expect(Buchestache.instance.store[:before_block]).to be true
+      expect(Buchestache.instance.store[:after_block]).to be true
     end
 
     context 'storing data in the custom block' do
       before :each do
         block = ->(env, response) {
           request = Rack::Request.new(env)
-          Buchestache.store[:path] = request.path
+          Buchestache.instance.store[:path] = request.path
         }
         @middleware = Buchestache::Middleware.new(app, block)
       end
 
       it "can store arbitrary data in the Buchestache store" do
         @middleware.call env_for('/')
-        expect(Buchestache.store[:path]).to eq('/')
+        expect(Buchestache.instance.store[:path]).to eq('/')
       end
 
       it 'uses the stored data to build the event' do
@@ -61,7 +61,7 @@ describe Buchestache::Middleware do
       before :each do
         app = ->(env) do
           request = Rack::Request.new(env)
-          Buchestache.store[:scheme] = request.scheme
+          Buchestache.instance.store[:scheme] = request.scheme
           [200, {}, "app"]
         end
         @middleware = Buchestache::Middleware.new(app, before_block)
@@ -69,7 +69,7 @@ describe Buchestache::Middleware do
 
       it "can store arbitrary data in the Buchestache store" do
         @middleware.call env_for('/')
-        expect(Buchestache.store[:scheme]).to eq('http')
+        expect(Buchestache.instance.store[:scheme]).to eq('http')
       end
 
       it 'uses the stored data to build the event' do
@@ -94,7 +94,7 @@ describe Buchestache::Middleware do
     context 'persistence between before/after block' do
       it "saves instance variables between before/after block" do
         before_block = ->(env, request) { @foo = 'foo' }
-        after_block = ->(env, request) { Buchestache.store[:foo] = @foo }
+        after_block = ->(env, request) { Buchestache.instance.store[:foo] = @foo }
         @middleware = Buchestache::Middleware.new(app, before_block, after_block)
 
         expect(LogStash::Event).to receive(:new).with({

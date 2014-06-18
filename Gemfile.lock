@@ -3,6 +3,7 @@ PATH
   specs:
     buchestache (0.0.1)
       logstash-event
+      thread_safe
 
 GEM
   remote: https://rubygems.org/

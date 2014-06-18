@@ -10,7 +10,7 @@ class Buchestache
 
     def call(env)
       response = nil
-      Buchestache.log do
+      Buchestache.instance.log do
         start = Time.now
         @hostname ||= Socket.gethostname
 
@@ -18,9 +18,9 @@ class Buchestache
 
         response = @app.call(env)
 
-        Buchestache.store[:duration] = Time.now - start
-        Buchestache.store[:status] = response.first
-        Buchestache.store[:hostname] = @hostname
+        Buchestache.instance.store[:duration] = ((Time.now - start) * 1000.0).round(2)
+        Buchestache.instance.store[:status] = response.first
+        Buchestache.instance.store[:hostname] = @hostname
 
         safe_call { after_block(env, response) }
       end

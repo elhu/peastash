@@ -15,13 +15,10 @@ RSpec.configure do |config|
     # Muting the output from the logger
     Buchestache::Outputs::IO.class_variable_set(:@@default_io, File.open(File::NULL, File::WRONLY))
   end
-  # config.before(:each) { unconfigure_foostash! }
 end
 
 def unconfigure_foostash!
-  %w(@source @base_tags @output @store_name @configured @configuration).each do |var|
-    Buchestache.instance_variable_set(var, nil)
-  end
+  Buchestache.class_variable_set(:@@instance_cache, ThreadSafe::Cache.new)
 end
 
 def env_for(url, opts={})
