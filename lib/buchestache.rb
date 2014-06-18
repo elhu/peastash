@@ -45,7 +45,11 @@ class Buchestache
   end
 
   def self.instance(instance_name = :global)
-    @@instance_cache[instance_name] ||= Buchestache.new(instance_name)
+    @@instance_cache[instance_name] ||= begin
+      instance = Buchestache.new(instance_name)
+      instance.configure!(@@instance_cache[:global].configuration || {}) if @@instance_cache[:global]
+      instance
+    end
   end
 
   private

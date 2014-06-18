@@ -15,6 +15,11 @@ describe Buchestache do
     it 'uses `global` as the default instance name' do
       expect(Buchestache.instance(:global)).to be(Buchestache.instance)
     end
+
+    it 'inherits its configuration for the `global` conf' do
+      Buchestache.instance(:global).configure!({source: :foo})
+      expect(Buchestache.instance(:bar).configuration[:source]).to be(:foo)
+    end
   end
 
   describe "#configure!" do
