@@ -12,6 +12,8 @@ class Buchestache
 
   def initialize(instance_name)
     @instance_name = instance_name
+
+    configure!(@@instance_cache[:global].configuration || {}) if @@instance_cache[:global]
   end
 
   def store
@@ -33,7 +35,7 @@ class Buchestache
     configure! unless configured?
     tags.replace(additional_tags)
     store.clear
-    yield
+    yield(instance)
     if !store.empty? || dump_if_empty?
       event = build_event(@source, tags)
       @output.dump(event)
@@ -44,12 +46,12 @@ class Buchestache
     Thread.current[@store_name + ":tags"] ||= []
   end
 
-  def self.instance(instance_name = :global)
-    @@instance_cache[instance_name] ||= begin
-      instance = Buchestache.new(instance_name)
-      instance.configure!(@@instance_cache[:global].configuration || {}) if @@instance_cache[:global]
-      instance
-    end
+  def instance
+    @@instance_cache[instance_name]
+  end
+
+  def self.with_instance(instance_name = :global)
+    @@instance_cache[instance_name] ||= Buchestache.new(instance_name)
   end
 
   private

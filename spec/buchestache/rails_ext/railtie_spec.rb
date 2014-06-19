@@ -13,9 +13,9 @@ describe Buchestache::Railtie do
 
     it "doesn't add the subscriber" do
       run_with_env 'test_without_buchestache' do
-        Buchestache.instance.store.clear
+        Buchestache.with_instance.store.clear
         ActiveSupport::Notifications.instrument('process_action.action_controller', db_runtime: 1)
-        expect(Buchestache.instance.store).to_not include(db_runtime: 1)
+        expect(Buchestache.with_instance.store).to_not include(db_runtime: 1)
       end
     end
   end
@@ -26,7 +26,7 @@ describe Buchestache::Railtie do
       require 'dummy/config/environment'
     end
 
-    before(:each) { Buchestache.instance.store.clear }
+    before(:each) { Buchestache.with_instance.store.clear }
 
     it "adds the middleware" do
       expect(Rails.application.middleware).to include(Buchestache::Middleware)
@@ -34,26 +34,26 @@ describe Buchestache::Railtie do
 
     it "adds a subscriber on 'process_action.action_controller' to gather metrics about the request" do
       ActiveSupport::Notifications.instrument('process_action.action_controller', db_runtime: 1)
-      expect(Buchestache.instance.store).to include(db_runtime: 1)
+      expect(Buchestache.with_instance.store).to include(db_runtime: 1)
     end
 
     context "params logging" do
       it "doesn't log the parameters if log_parameters isn't true" do
-        Buchestache.instance.configuration[:log_parameters] = false
+        Buchestache.with_instance.configuration[:log_parameters] = false
         Rails.application.call env_for('/')
-        expect(Buchestache.instance.store.keys).to_not include(:params)
+        expect(Buchestache.with_instance.store.keys).to_not include(:params)
       end
 
       it "logs the parameters if log_parameters is true" do
-        Buchestache.instance.configuration[:log_parameters] = true
+        Buchestache.with_instance.configuration[:log_parameters] = true
         Rails.application.call env_for('/')
-        expect(Buchestache.instance.store.keys).to include(:params)
+        expect(Buchestache.with_instance.store.keys).to include(:params)
       end
 
       it "doesn't log filtered parameters in clear text" do
-        Buchestache.instance.configuration[:log_parameters] = true
+        Buchestache.with_instance.configuration[:log_parameters] = true
         Rails.application.call env_for('/?password=foo')
-        expect(Buchestache.instance.store[:params]["password"]).to eq("[FILTERED]")
+        expect(Buchestache.with_instance.store[:params]["password"]).to eq("[FILTERED]")
       end
     end
   end
