@@ -4,14 +4,36 @@ require 'buchestache/outputs/io'
 require 'buchestache/rails_ext' if defined?(Rails)
 
 class Buchestache
-  STORE_NAME = 'buchestache'
-  @@instance_cache = ThreadSafe::Cache.new
 
-  attr_accessor :configuration
+  STORE_NAME = 'buchestache'
+
+  class << self
+
+    def configure!(conf = {})
+      with_instance.configure!(conf)
+    end
+
+    def with_instance(instance_name = :global)
+      @@instance_cache[instance_name] ||= Buchestache.new(instance_name)
+    end
+
+  end
+
   attr_reader :instance_name
+  attr_accessor :configuration
+
+  @@instance_cache = ThreadSafe::Cache.new
 
   def initialize(instance_name)
     @instance_name = instance_name
+
+    @configuration = {
+      :source => STORE_NAME,
+      :tags => [],
+      :output => Outputs::IO.new(Outputs::IO::default_io),
+      :store_name => STORE_NAME,
+      :dump_if_empty => true
+    }
 
     configure!(@@instance_cache[:global].configuration || {}) if @@instance_cache[:global]
   end
@@ -22,12 +44,12 @@ class Buchestache
   end
 
   def configure!(conf = {})
-    self.configuration = conf
-    @source = conf[:source] || STORE_NAME
-    @base_tags = [conf[:tags] || []].flatten
-    @output = conf[:output] || Outputs::IO.new(Outputs::IO::default_io)
-    @store_name = conf[:store_name] || STORE_NAME
-    @dump_if_empty = conf.has_key?(:dump_if_empty) ? conf[:dump_if_empty] : true
+    self.configuration.merge!(conf)
+    @source = configuration[:source]
+    @base_tags = configuration[:tags].flatten
+    @output = configuration[:output]
+    @store_name = configuration[:store_name]
+    @dump_if_empty = configuration[:dump_if_empty]
     @configured = true
   end
 
@@ -50,11 +72,8 @@ class Buchestache
     @@instance_cache[instance_name]
   end
 
-  def self.with_instance(instance_name = :global)
-    @@instance_cache[instance_name] ||= Buchestache.new(instance_name)
-  end
-
   private
+
   def configured?
     @configured
   end
