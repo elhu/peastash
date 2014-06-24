@@ -3,7 +3,10 @@ require 'buchestache/middleware'
 require 'pry'
 
 describe Buchestache::Middleware do
-  before { Socket.stub(:gethostname) { 'example.com' } }
+  before do
+    Buchestache.any_instance.stub(:enabled?) { true }
+    Socket.stub(:gethostname) { 'example.com' }
+  end
   let(:app) { ->(env) { [200, {}, "app"] } }
   let(:before_block) { ->(env, response) {} }
   let(:after_block) { ->(env, response) {} }

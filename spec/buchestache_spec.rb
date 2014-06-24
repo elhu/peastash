@@ -2,6 +2,9 @@ require 'spec_helper'
 
 describe Buchestache do
   after(:each) { unconfigure_foostash! }
+  before :each do
+    Buchestache.any_instance.stub(:enabled?) { true }
+  end
 
   describe "scoped instances" do
     it 'always return the same instance for the same name' do
