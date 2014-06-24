@@ -54,6 +54,8 @@ class Buchestache
   end
 
   def log(additional_tags = [])
+    return unless enabled?
+
     configure! unless configured?
     tags.replace(additional_tags)
     store.clear
@@ -66,6 +68,10 @@ class Buchestache
 
   def tags
     Thread.current[@store_name + ":tags"] ||= []
+  end
+
+  def enabled?
+    !!configuration[:enabled]
   end
 
   def instance
