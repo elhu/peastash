@@ -12,7 +12,6 @@ class Buchestache
       response = nil
       Buchestache.with_instance.log do
         start = Time.now
-        @hostname ||= Socket.gethostname
 
         safe_call { before_block(env, response) }
 
@@ -20,7 +19,6 @@ class Buchestache
 
         Buchestache.with_instance.store[:duration] = ((Time.now - start) * 1000.0).round(2)
         Buchestache.with_instance.store[:status] = response.first
-        Buchestache.with_instance.store[:hostname] = @hostname
 
         safe_call { after_block(env, response) }
       end
