@@ -17,6 +17,10 @@ class Buchestache
           end
           # Preserve explicitely set data
           Buchestache.with_instance.tags << 'rails'
+
+          # Preserving logstasher's keys for easier adoption
+          keys_to_rename = data.keys.select { |k| k.to_s.end_with? '_runtime' }
+          keys_to_rename.each { |key| data[key.to_s.gsub('_runtime', '').to_sym] = data[key]; data.delete(key) }
           Buchestache.with_instance.store.merge!(data) { |key, old_val, new_val| old_val }
         end
         app.config.middleware.use Buchestache::Middleware
