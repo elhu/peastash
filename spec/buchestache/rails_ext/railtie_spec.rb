@@ -15,7 +15,7 @@ describe Buchestache::Railtie do
       run_with_env 'test_without_buchestache' do
         Buchestache.with_instance.store.clear
         ActiveSupport::Notifications.instrument('process_action.action_controller', db_runtime: 1)
-        expect(Buchestache.with_instance.store).to_not include(db: 1)
+        expect(Buchestache.with_instance.store).to_not include(db_runtime: 1)
       end
     end
   end
@@ -34,7 +34,7 @@ describe Buchestache::Railtie do
 
     it "adds a subscriber on 'process_action.action_controller' to gather metrics about the request" do
       ActiveSupport::Notifications.instrument('process_action.action_controller', db_runtime: 1)
-      expect(Buchestache.with_instance.store).to include(db: 1)
+      expect(Buchestache.with_instance.store).to include(db_runtime: 1)
     end
 
     context "params logging" do
