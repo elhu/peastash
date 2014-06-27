@@ -16,6 +16,7 @@ class Buchestache
             data.delete(:params)
           end
           # Preserve explicitely set data
+          Buchestache.with_instance.tags << 'rails'
           Buchestache.with_instance.store.merge!(data) { |key, old_val, new_val| old_val }
         end
         app.config.middleware.use Buchestache::Middleware
