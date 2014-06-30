@@ -1,16 +1,16 @@
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
-require 'buchestache/version'
+require 'peastash/version'
 
 Gem::Specification.new do |gem|
-  gem.name          = "buchestache"
-  gem.version       = Buchestache::VERSION
+  gem.name          = "peastash"
+  gem.version       = Peastash::VERSION
   gem.authors       = ["Vincent Boisard"]
   gem.email         = ["boisard.v@gmail.com"]
   gem.description   = %q{RequestStore gives you per-request global storage.}
   gem.summary       = %q{RequestStore gives you per-request global storage.}
-  gem.homepage      = "http://github.com/elhu/buchestache"
+  gem.homepage      = "http://github.com/elhu/peastash"
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }

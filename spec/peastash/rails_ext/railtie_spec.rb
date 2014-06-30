@@ -1,21 +1,21 @@
 require 'spec_helper'
 require 'rails'
-require 'buchestache/rails_ext'
+require 'peastash/rails_ext'
 require 'simplecov'
 
-describe Buchestache::Railtie do
+describe Peastash::Railtie do
   context 'not configured' do
     it "doesn't add the middleware by default" do
-      run_with_env 'test_without_buchestache' do
-        expect(Rails.application.middleware).to_not include(Buchestache::Middleware)
+      run_with_env 'test_without_peastash' do
+        expect(Rails.application.middleware).to_not include(Peastash::Middleware)
       end
     end
 
     it "doesn't add the subscriber" do
-      run_with_env 'test_without_buchestache' do
-        Buchestache.with_instance.store.clear
+      run_with_env 'test_without_peastash' do
+        Peastash.with_instance.store.clear
         ActiveSupport::Notifications.instrument('process_action.action_controller', db_runtime: 1)
-        expect(Buchestache.with_instance.store).to_not include(db_runtime: 1)
+        expect(Peastash.with_instance.store).to_not include(db_runtime: 1)
       end
     end
   end
@@ -26,34 +26,34 @@ describe Buchestache::Railtie do
       require 'dummy/config/environment'
     end
 
-    before(:each) { Buchestache.with_instance.store.clear }
+    before(:each) { Peastash.with_instance.store.clear }
 
     it "adds the middleware" do
-      expect(Rails.application.middleware).to include(Buchestache::Middleware)
+      expect(Rails.application.middleware).to include(Peastash::Middleware)
     end
 
     it "adds a subscriber on 'process_action.action_controller' to gather metrics about the request" do
       ActiveSupport::Notifications.instrument('process_action.action_controller', db_runtime: 1)
-      expect(Buchestache.with_instance.store).to include(db_runtime: 1)
+      expect(Peastash.with_instance.store).to include(db_runtime: 1)
     end
 
     context "params logging" do
       it "doesn't log the parameters if log_parameters isn't true" do
-        Buchestache.with_instance.configuration[:log_parameters] = false
+        Peastash.with_instance.configuration[:log_parameters] = false
         Rails.application.call env_for('/')
-        expect(Buchestache.with_instance.store.keys).to_not include(:params)
+        expect(Peastash.with_instance.store.keys).to_not include(:params)
       end
 
       it "logs the parameters if log_parameters is true" do
-        Buchestache.with_instance.configuration[:log_parameters] = true
+        Peastash.with_instance.configuration[:log_parameters] = true
         Rails.application.call env_for('/')
-        expect(Buchestache.with_instance.store.keys).to include(:params)
+        expect(Peastash.with_instance.store.keys).to include(:params)
       end
 
       it "doesn't log filtered parameters in clear text" do
-        Buchestache.with_instance.configuration[:log_parameters] = true
+        Peastash.with_instance.configuration[:log_parameters] = true
         Rails.application.call env_for('/?password=foo')
-        expect(Buchestache.with_instance.store[:params]["password"]).to eq("[FILTERED]")
+        expect(Peastash.with_instance.store[:params]["password"]).to eq("[FILTERED]")
       end
     end
   end

@@ -1,6 +1,6 @@
 require 'active_support/notifications'
 
-class Buchestache
+class Peastash
   module Watch
     def watch(event, opts = {}, &block)
       event_group = opts[:event_group] || event
@@ -12,4 +12,4 @@ class Buchestache
   end
 end
 
-Buchestache.send :include, Buchestache::Watch
+Peastash.send :include, Peastash::Watch

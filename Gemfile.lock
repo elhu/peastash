@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    buchestache (0.0.2)
+    peastash (0.0.2)
       logstash-event
       thread_safe
 
@@ -118,7 +118,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  buchestache!
+  peastash!
   pry
   rack-test
   rails
