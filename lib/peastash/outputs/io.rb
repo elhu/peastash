@@ -1,6 +1,6 @@
 require 'logger'
 
-class Buchestache
+class Peastash
   module Outputs
     class IO
       @@default_io = STDOUT

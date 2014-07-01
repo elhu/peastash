@@ -1,11 +1,11 @@
 require 'logstash/event'
 require 'thread_safe'
-require 'buchestache/outputs/io'
-require 'buchestache/rails_ext' if defined?(Rails)
+require 'peastash/outputs/io'
+require 'peastash/rails_ext' if defined?(Rails)
 
-class Buchestache
+class Peastash
 
-  STORE_NAME = 'buchestache'
+  STORE_NAME = 'peastash'
 
   class << self
 
@@ -14,7 +14,7 @@ class Buchestache
     end
 
     def with_instance(instance_name = :global)
-      @@instance_cache[instance_name] ||= Buchestache.new(instance_name)
+      @@instance_cache[instance_name] ||= Peastash.new(instance_name)
     end
 
   end

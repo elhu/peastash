@@ -11,7 +11,7 @@ task :test => :spec
 task :console do
   require 'irb'
   require 'irb/completion'
-  require 'buchestache'
+  require 'peastash'
   ARGV.clear
   IRB.start
 end

@@ -1,6 +1,6 @@
 require 'socket'
 
-class Buchestache
+class Peastash
   class Middleware
     def initialize(app, before_block = nil, after_block = nil)
       @app = app
@@ -10,15 +10,15 @@ class Buchestache
 
     def call(env)
       response = nil
-      Buchestache.with_instance.log do
+      Peastash.with_instance.log do
         start = Time.now
 
         safe_call { before_block(env, response) }
 
         response = @app.call(env)
 
-        Buchestache.with_instance.store[:duration] = ((Time.now - start) * 1000.0).round(2)
-        Buchestache.with_instance.store[:status] = response.first
+        Peastash.with_instance.store[:duration] = ((Time.now - start) * 1000.0).round(2)
+        Peastash.with_instance.store[:status] = response.first
 
         safe_call { after_block(env, response) }
       end
