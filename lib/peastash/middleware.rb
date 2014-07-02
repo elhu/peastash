@@ -15,6 +15,10 @@ class Peastash
 
         safe_call { before_block(env, response) }
 
+        # Setting this before calling the next middleware so it can be overriden
+        request = Rack::Request.new(env)
+        Peastash.with_instance.store[:ip] = request.ip
+
         response = @app.call(env)
 
         Peastash.with_instance.store[:duration] = ((Time.now - start) * 1000.0).round(2)

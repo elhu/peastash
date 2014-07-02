@@ -52,7 +52,7 @@ describe Peastash::Middleware do
       it 'uses the stored data to build the event' do
         expect(LogStash::Event).to receive(:new).with({
           '@source' => Peastash::STORE_NAME,
-          '@fields' => { path: '/', duration: 0, status: 200 },
+          '@fields' => { path: '/', duration: 0, status: 200, ip: nil },
           '@tags' => []
         })
         Timecop.freeze { @middleware.call env_for('/') }
@@ -77,7 +77,7 @@ describe Peastash::Middleware do
       it 'uses the stored data to build the event' do
         expect(LogStash::Event).to receive(:new).with({
           '@source' => Peastash::STORE_NAME,
-          '@fields' => { scheme: 'http', duration: 0, status: 200 },
+          '@fields' => { scheme: 'http', duration: 0, status: 200, ip: nil },
           '@tags' => []
         })
         Timecop.freeze { @middleware.call env_for('/') }
@@ -101,7 +101,7 @@ describe Peastash::Middleware do
 
         expect(LogStash::Event).to receive(:new).with({
           '@source' => Peastash::STORE_NAME,
-          '@fields' => { duration: 0, status: 200, foo: 'foo' },
+          '@fields' => { duration: 0, status: 200, foo: 'foo', ip: nil },
           '@tags' => [],
         })
         Timecop.freeze { @middleware.call env_for('/') }
