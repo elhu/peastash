@@ -126,6 +126,11 @@ describe Peastash do
     end
 
     describe "#tags" do
+      it "calls configure beforehand if instance isn't configured" do
+        expect(Peastash.with_instance).to receive(:configure!).and_call_original
+        Peastash.with_instance.tags << 'foo'
+      end
+
       it "makes it possible to add tags from within the #log block" do
         base_tags = %w(foo bar)
         tags = %w(baz)

@@ -65,6 +65,7 @@ class Peastash
   end
 
   def tags
+    configure! unless configured?
     Thread.current[@store_name + ":tags"] ||= []
   end
 
