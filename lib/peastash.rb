@@ -54,13 +54,11 @@ class Peastash
   end
 
   def log(additional_tags = [])
-    return unless enabled?
-
     configure! unless configured?
     tags.replace(additional_tags)
     store.clear
     yield(instance)
-    if !store.empty? || dump_if_empty?
+    if enabled? && (!store.empty? || dump_if_empty?)
       event = build_event(@source, tags)
       @output.dump(event)
     end
