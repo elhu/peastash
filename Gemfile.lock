@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    peastash (0.0.5)
+    peastash (0.0.6)
       logstash-event
       thread_safe
 
