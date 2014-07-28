@@ -1,7 +1,7 @@
 $:.unshift File.expand_path('../lib', __FILE__)
 
-ENV['RACK_ENV'] = 'test'
-ENV['RAILS_ENV'] = 'test'
+# ENV['RACK_ENV'] = 'test'
+# ENV['RAILS_ENV'] = 'test'
 
 require 'timecop'
 require 'simplecov'

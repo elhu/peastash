@@ -21,7 +21,8 @@ class Peastash
           # Preserve explicitely set data
           Peastash.with_instance.store.merge!(payload) { |key, old_val, new_val| old_val }
         end
-        app.config.middleware.use Peastash::Middleware
+        before_middleware = app.config.peastash[:insert_before] || ActionDispatch::ShowExceptions
+        app.config.middleware.insert_before before_middleware, Peastash::Middleware
       end
     end
   end
