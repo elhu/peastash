@@ -13,7 +13,7 @@ class Peastash
           to_reject = [:db_runtime, :view_runtime, :exception]
           payload = data.reject { |key, _| to_reject.include?(key) }
           payload.merge!(db: data[:db_runtime], view: data[:view_runtime])
-          payload.merge!(exception: { class: data[:exception].first, message: data[:exception].last }) if data.has_key?(:exception)
+          payload.merge!(exception: { class: data[:exception].first, message: data[:exception].last[0..200] }) if data.has_key?(:exception)
           if Peastash.with_instance.configuration[:log_parameters]
             payload[:params].reject { |k, _| ActionController::LogSubscriber::INTERNAL_PARAMS.include?(k) }
           else
