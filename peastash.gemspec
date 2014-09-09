@@ -8,8 +8,8 @@ Gem::Specification.new do |gem|
   gem.version       = Peastash::VERSION
   gem.authors       = ["Vincent Boisard"]
   gem.email         = ["boisard.v@gmail.com"]
-  gem.description   = %q{RequestStore gives you per-request global storage.}
-  gem.summary       = %q{RequestStore gives you per-request global storage.}
+  gem.description   = %q{Peastash allows you to instrument your code with the ELK stack easily.}
+  gem.summary       = %q{Peastash allows you to instrument your code with the ELK stack easily.}
   gem.homepage      = "http://github.com/elhu/peastash"
 
   gem.files         = `git ls-files`.split($/)
