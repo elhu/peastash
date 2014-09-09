@@ -2,6 +2,15 @@
 
 ## Description
 
+Peastash helps you instrument your Ruby code with the ELK stack. It provides useful methods to easily write logs in a format that Logstash can understand, which will turn in (hopefully) beautiful dashboards using Elasticsearch and Kibana.
+
+The design philosophy behind Peastash is:
+* Be as unobstrusive as possible. Your code shouldn't be riddled with references to Peastash.
+* Keep the code-base small and well-tested
+* Provide sane default that will work for most people out of the box
+
+Any ruby application can benefit from having clear metrics, and now you have one less excuse to start instrumenting your code today.
+
 ## Usage
 
 ### Installing
@@ -42,12 +51,21 @@ Peastash.with_instance.configure!({
 })
 ```
 
+#### Safety
+
+``Peastash`` is safe by default. This means that if anything raises, Peastash will keep on going with the program's execution flow to be as unobtrusive as possible.
+If this behaviour is unsuitable for your needs (for example if you want to test the new Peastash output you've just developped), simply call:
+
+```ruby
+Peastash.unsafe!
+```
+Please note that this is a global setting and cannot be set per-instance.
+
 #### Outputs
 
 Peastash ships with a single output: ``Peastash::Outputs::IO``. It can be initialized either by passing it path or an IO object.
 Peastash can easily be extended to output to any target.
 Simply configure Peastash's output with an object that responds to the ``#dump`` method. This method will be called at the end of the ``#log`` block, with 1 argument : a ``LogStash::Event`` object, that you will probably need to serialize to json.
-
 
 ### What if I want to use it in my rack app?
 
@@ -85,6 +103,8 @@ config.peastash.source = Rails.application.class.parent_name
 
 By default, Peastash's Rails integration will log the same parameters as the Middleware version, plus the fields in the payload of the [``process_action.action_controller``](http://edgeguides.rubyonrails.org/active_support_instrumentation.html#process_action.action_controller) notification (except the params).
 
+All the options for ``Peastash`` can be set using the ``config.peastash`` configuratio object.
+
 #### Logging request parameters
 
 To enable parameter logging, you must add the following to your configuration:
@@ -121,6 +141,19 @@ Peastash.with_instance.watch('bar.notification', event_group: 'notification') do
   # Shared store with 'foo.notification'
 end
 ```
+
+### Playing with multiple instances
+
+Calling ``Peastash.with_instance`` is the same as calling ``Peastash.with_instance(:global)``.
+You can use different instances to log different things.
+Each instance as its own:
+
+* Configuration (inherited from the ``global`` instance)
+* Store
+* Tags
+
+Using several instances, you can nest ``log`` blocks without sharing the store, or simply use them for different purposes.
+For example, you can log your Rails query with the ``global`` instance, and your asynchronous jobs with a ``worker`` instance, and have those instances output to different files.
 
 ### Playing with tags
 There are three ways to tag your log entries in Peastash.with_instance.
