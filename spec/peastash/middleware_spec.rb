@@ -110,6 +110,7 @@ describe Peastash::Middleware do
 
     context "exception in before / after block" do
       before :each do
+        Peastash.safe!
         before_block = ->(env, request) { 1 / 0 }
         after_block = ->(env, request) { unknown_method }
         @middleware = Peastash::Middleware.new(app, before_block, after_block)
@@ -130,6 +131,7 @@ describe Peastash::Middleware do
     end
 
     it "doesn't catch exception in the app" do
+      Peastash.safe!
       app = ->(env) { raise }
       @middleware = Peastash::Middleware.new(app)
       expect {

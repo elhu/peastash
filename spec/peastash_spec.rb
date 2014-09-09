@@ -125,6 +125,45 @@ describe Peastash do
       end
     end
 
+    describe ".safely" do
+      context "when safe" do
+        before { Peastash.safe! }
+
+        it 'rescues errors silently' do
+          expect {
+            Peastash.safely { 1 / 0 }
+          }.not_to raise_error
+        end
+
+        it 'returns value returned from the block' do
+          expect(Peastash.safely { "test" }).to eq("test")
+        end
+
+        it "puts the error to STDERR for easy debugging" do
+          expect(STDERR).to receive(:puts)
+          Peastash.safely { 1 / 0 }
+        end
+      end
+
+      context "when unsafe" do
+        before { Peastash.unsafe! }
+
+        it 'doesn\'t rescue errors silently' do
+          expect {
+            Peastash.safely { 1 / 0 }
+          }.to raise_error(ZeroDivisionError)
+        end
+
+        it "puts the error to STDERR for easy debugging" do
+          expect(STDERR).to receive(:puts)
+
+          expect {
+            Peastash.safely { 1 / 0 }
+          }.to raise_error(ZeroDivisionError)
+        end
+      end
+    end
+
     describe "#tags" do
       it "calls configure beforehand if instance isn't configured" do
         expect(Peastash.with_instance).to receive(:configure!).and_call_original

@@ -15,6 +15,11 @@ RSpec.configure do |config|
     # Muting the output from the logger
     Peastash::Outputs::IO.class_variable_set(:@@default_io, File.open(File::NULL, File::WRONLY))
   end
+
+  config.before(:each) do
+    # For the errors to be raised
+    Peastash.unsafe!
+  end
 end
 
 def unconfigure_foostash!
