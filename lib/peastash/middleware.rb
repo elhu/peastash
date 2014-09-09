@@ -13,27 +13,25 @@ class Peastash
       Peastash.with_instance.log do
         start = Time.now
 
-        safe_call { before_block(env, response) }
+        Peastash.safely do
+          before_block(env, response)
 
-        # Setting this before calling the next middleware so it can be overriden
-        request = Rack::Request.new(env)
-        Peastash.with_instance.store[:ip] = request.ip
+          # Setting this before calling the next middleware so it can be overriden
+          request = Rack::Request.new(env)
+          Peastash.with_instance.store[:ip] = request.ip
+        end
 
         response = @app.call(env)
 
-        Peastash.with_instance.store[:duration] = ((Time.now - start) * 1000.0).round(2)
-        Peastash.with_instance.store[:status] = response.first
+        Peastash.safely do
+          Peastash.with_instance.store[:duration] = ((Time.now - start) * 1000.0).round(2)
+          Peastash.with_instance.store[:status] = response.first
 
-        safe_call { after_block(env, response) }
+          after_block(env, response)
+        end
       end
-      response
-    end
 
-    private
-    def safe_call
-      yield
-    rescue StandardError => e
-      STDERR.puts e
+      response
     end
   end
 end

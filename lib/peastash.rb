@@ -17,6 +17,25 @@ class Peastash
       @@instance_cache[instance_name] ||= Peastash.new(instance_name)
     end
 
+    def safely
+      yield
+    rescue StandardError => e
+      STDERR.puts e
+      raise e unless safe?
+    end
+
+    def safe?
+      !@unsafe
+    end
+
+    def safe!
+      @unsafe = false
+    end
+
+    def unsafe!
+      @unsafe = true
+    end
+
   end
 
   attr_reader :instance_name
@@ -54,19 +73,27 @@ class Peastash
   end
 
   def log(additional_tags = [])
-    configure! unless configured?
-    tags.replace(additional_tags)
-    store.clear
+    Peastash.safely do
+      configure! unless configured?
+      tags.replace(additional_tags)
+      store.clear
+    end
+
     yield(instance)
-    if enabled? && (!store.empty? || dump_if_empty?)
-      event = build_event(@source, tags)
-      @output.dump(event)
+
+    Peastash.safely do
+      if enabled? && (!store.empty? || dump_if_empty?)
+        event = build_event(@source, tags)
+        @output.dump(event)
+      end
     end
   end
 
   def tags
-    configure! unless configured?
-    Thread.current[@store_name + ":tags"] ||= []
+    Peastash.safely do
+      configure! unless configured?
+      Thread.current[@store_name + ":tags"] ||= []
+    end
   end
 
   def enabled?
