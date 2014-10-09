@@ -23,8 +23,8 @@ gem 'peastash'
 
 ### Getting started
 ``Peastash`` provides a simple interface to aggregate data to be sent to Logstash.
-The boundaries of a log entry are defined by a the ``Peastash.with_instance.log`` block.
-When the code inside the block is done running a log entry will be created and written.
+The boundaries of a log entry are defined by the ``Peastash.with_instance.log`` block.
+When the code inside the block is done running, a log entry will be created and written.
 The most basic usage would look like:
 
 ```ruby
@@ -63,9 +63,9 @@ Please note that this is a global setting and cannot be set per-instance.
 
 #### Outputs
 
-Peastash ships with a single output: ``Peastash::Outputs::IO``. It can be initialized either by passing it path or an IO object.
+Peastash ships with a single output: ``Peastash::Outputs::IO``. It can be initialized either by passing it a path or an IO object.
 Peastash can easily be extended to output to any target.
-Simply configure Peastash's output with an object that responds to the ``#dump`` method. This method will be called at the end of the ``#log`` block, with 1 argument : a ``LogStash::Event`` object, that you will probably need to serialize to json.
+Simply configure Peastash's output with an object that responds to the ``#dump`` method. This method will be called at the end of the ``#log`` block, with 1 argument: a ``LogStash::Event`` object that you will probably need to serialize to json.
 
 ### What if I want to use it in my rack app?
 
@@ -77,7 +77,7 @@ use Peastash::Middleware
 ```
 
 By default, the middleware only adds the ``duration``, ``status`` and ``hostname`` (machine name) fields to the log entry.
-In addition to using ``Peastash.with_instance.store`` to add information, you can pass one or two block arguments to ``use``, that will be called with the request env and the Rack response in parameter, in the context of the Middleware's instance.
+In addition to using ``Peastash.with_instance.store`` to add information, you can pass one or two block arguments to the ``use`` dsl, that will be called with the request ``env`` and the Rack response in parameter, in the context of the Middleware's instance.
 The first block will be called **before** the request (with a ``response = nil``), while the second one will be called **after**, with the actual response. For example:
 
 ```ruby
@@ -103,7 +103,7 @@ config.peastash.source = Rails.application.class.parent_name
 
 By default, Peastash's Rails integration will log the same parameters as the Middleware version, plus the fields in the payload of the [``process_action.action_controller``](http://edgeguides.rubyonrails.org/active_support_instrumentation.html#process_action.action_controller) notification (except the params).
 
-All the options for ``Peastash`` can be set using the ``config.peastash`` configuratio object.
+All the options for ``Peastash`` can be set using the ``config.peastash`` configuration object.
 
 #### Logging request parameters
 
@@ -113,7 +113,7 @@ To enable parameter logging, you must add the following to your configuration:
 config.peastash.log_parameters = true
 ```
 
-Be careful, as this can significantly increase the size of the log entries, as well as causing problem if other Logstash entries have the same field with a different data type.
+Be careful, as this can significantly increase the size of the log entries, as well as causing issues if other Logstash entries have the same field with a different data type.
 
 #### Listening to ``ActiveSupport::Notifications``
 Additionaly, you can use Peastash to aggregate data from any ``ActiveSupport::Notifications``:
@@ -156,10 +156,10 @@ Using several instances, you can nest ``log`` blocks without sharing the store, 
 For example, you can log your Rails query with the ``global`` instance, and your asynchronous jobs with a ``worker`` instance, and have those instances output to different files.
 
 ### Playing with tags
-There are three ways to tag your log entries in Peastash.with_instance.
+There are three ways to tag your log entries in ``Peastash.with_instance``.
 
-* The first one is through configuration (see above).
-* The second one is by passing tags to the ``Peastash.with_instance.log`` method.
+* The first one is through configuration (see above)
+* The second one is by passing tags to the ``Peastash.with_instance.log`` method
 * The last one is to call the ``Peastash.with_instance.tags`` method from within a ``Peastash.with_instance.log`` block. Tags defined with this method are not persistent and will disappear at the next call to ``Peastash.with_instance.log``
 
 For example:
