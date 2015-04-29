@@ -115,6 +115,11 @@ class Peastash
   end
 
   def build_event(source, tags)
-    LogStash::Event.new('@source' => source, '@fields' => store, '@tags' => @base_tags + tags)
+    LogStash::Event.new({
+      '@source' => source,
+      '@fields' => store,
+      '@tags' => @base_tags + tags,
+      '@pid' => Process.pid
+    })
   end
 end

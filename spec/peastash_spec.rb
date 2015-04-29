@@ -35,8 +35,9 @@ describe Peastash do
         Peastash.with_instance.configure!(tags: tags)
         expect(LogStash::Event).to receive(:new).with({
           '@source' => Peastash::STORE_NAME,
-          '@fields' => {},
-          '@tags' => tags
+          '@fields' => an_instance_of(Hash),
+          '@tags' => tags,
+          '@pid' => an_instance_of(Fixnum),
         })
         Peastash.with_instance.log {}
       end
@@ -45,8 +46,9 @@ describe Peastash do
         Peastash.with_instance.configure!(source: 'foo')
         expect(LogStash::Event).to receive(:new).with({
           '@source' => 'foo',
-          '@fields' => {},
-          '@tags' => []
+          '@fields' => an_instance_of(Hash),
+          '@tags' => [],
+          '@pid' => an_instance_of(Fixnum),
         })
         Peastash.with_instance.log {}
       end
@@ -118,8 +120,9 @@ describe Peastash do
         Peastash.with_instance.configure!(tags: base_tags)
         expect(LogStash::Event).to receive(:new).with({
           '@source' => Peastash::STORE_NAME,
-          '@fields' => {},
-          '@tags' => base_tags + tags
+          '@fields' => an_instance_of(Hash),
+          '@tags' => base_tags + tags,
+          '@pid' => an_instance_of(Fixnum),
         })
         Peastash.with_instance.log(tags) {}
       end
@@ -177,8 +180,9 @@ describe Peastash do
         Peastash.with_instance.configure!(tags: base_tags)
         expect(LogStash::Event).to receive(:new).with({
           '@source' => Peastash::STORE_NAME,
-          '@fields' => {},
-          '@tags' => base_tags + tags + additional_tags
+          '@fields' => an_instance_of(Hash),
+          '@tags' => base_tags + tags + additional_tags,
+          '@pid' => an_instance_of(Fixnum),
         })
         Peastash.with_instance.log(tags) { Peastash.with_instance.tags.concat(additional_tags) }
       end

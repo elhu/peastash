@@ -53,7 +53,8 @@ describe Peastash::Middleware do
         expect(LogStash::Event).to receive(:new).with({
           '@source' => Peastash::STORE_NAME,
           '@fields' => { path: '/', duration: 0, status: 200, ip: nil },
-          '@tags' => []
+          '@tags' => [],
+          '@pid' => an_instance_of(Fixnum),
         })
         Timecop.freeze { @middleware.call env_for('/') }
       end
@@ -78,7 +79,8 @@ describe Peastash::Middleware do
         expect(LogStash::Event).to receive(:new).with({
           '@source' => Peastash::STORE_NAME,
           '@fields' => { scheme: 'http', duration: 0, status: 200, ip: nil },
-          '@tags' => []
+          '@tags' => [],
+          '@pid' => an_instance_of(Fixnum),
         })
         Timecop.freeze { @middleware.call env_for('/') }
       end
@@ -103,6 +105,7 @@ describe Peastash::Middleware do
           '@source' => Peastash::STORE_NAME,
           '@fields' => { duration: 0, status: 200, foo: 'foo', ip: nil },
           '@tags' => [],
+          '@pid' => an_instance_of(Fixnum),
         })
         Timecop.freeze { @middleware.call env_for('/') }
       end
