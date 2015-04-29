@@ -2,3 +2,4 @@ coverage
 pkg
 .DS_STORE
 *.log
+Gemfile.lock
