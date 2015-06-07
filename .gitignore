@@ -4,3 +4,4 @@ pkg
 *.log
 Gemfile.lock
 gemfiles/*.lock
+spec/dummy*/tmp
