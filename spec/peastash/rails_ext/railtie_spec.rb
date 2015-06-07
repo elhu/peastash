@@ -46,7 +46,7 @@ describe Peastash::Railtie do
 
         it 'adds the middleware before ActionDispatch::ShowExceptions by default' do
           show_exceptions_index = -1
-          Rails.application.middleware.each_with_index { |middleware, index| show_exceptions_index = index middleware == ActionDispatch::ShowExceptions }
+          Rails.application.middleware.each_with_index { |middleware, index| show_exceptions_index = index if middleware == ActionDispatch::ShowExceptions }
           expect(Rails.application.middleware[show_exceptions_index - 1]).to eq(Peastash::Middleware)
         end
       end
