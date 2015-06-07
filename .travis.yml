@@ -2,5 +2,14 @@ language: ruby
 rvm:
   - 1.9.3
   - 2.0.0
-  - 2.1.0
-  - jruby-19mode
+  - 2.1.6
+  - 2.2.0
+  - jruby-1.7.19
+  - jruby-1.7.20
+  - jruby-head
+gemfile:
+  - gemfiles/Gemfile.activesupport-3.2.x
+  - gemfiles/Gemfile.activesupport-4.0.x
+  - gemfiles/Gemfile.activesupport-4.1.x
+  - gemfiles/Gemfile.activesupport-4.2.x
+  - gemfiles/Gemfile.activesupport-edge
