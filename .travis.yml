@@ -8,8 +8,8 @@ rvm:
   - jruby-1.7.20
   - jruby-head
 gemfile:
-  - gemfiles/Gemfile.activesupport-3.2.x
-  - gemfiles/Gemfile.activesupport-4.0.x
-  - gemfiles/Gemfile.activesupport-4.1.x
-  - gemfiles/Gemfile.activesupport-4.2.x
-  - gemfiles/Gemfile.activesupport-edge
+  - gemfiles/Gemfile.rails-3.2.x
+  - gemfiles/Gemfile.rails-4.0.x
+  - gemfiles/Gemfile.rails-4.1.x
+  - gemfiles/Gemfile.rails-4.2.x
+  - gemfiles/Gemfile.rails-head
