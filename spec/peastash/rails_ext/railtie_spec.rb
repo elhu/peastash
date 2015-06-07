@@ -2,6 +2,7 @@ require 'spec_helper'
 require 'rails'
 require 'peastash/rails_ext'
 require 'simplecov'
+require 'pry'
 
 describe Peastash::Railtie do
   context 'not configured' do
@@ -60,23 +61,32 @@ describe Peastash::Railtie do
       context "params logging" do
         it "doesn't log the parameters if log_parameters isn't true" do
           Peastash.with_instance.configuration[:log_parameters] = false
-          Rails.application.call env_for('/')
+          perform_request('/')
+          res = Rails.application.call env_for('/')
+          res[2].close
           expect(Peastash.with_instance.store.keys).to_not include(:params)
         end
 
         it "logs the parameters if log_parameters is true" do
           Peastash.with_instance.configuration[:log_parameters] = true
-          Rails.application.call env_for('/')
+          perform_request('/')
           expect(Peastash.with_instance.store.keys).to include(:params)
         end
 
         it "doesn't log filtered parameters in clear text" do
           Peastash.with_instance.configuration[:log_parameters] = true
-          Rails.application.call env_for('/?password=foo')
+          perform_request('/?password=foo')
           expect(Peastash.with_instance.store[:params]["password"]).to eq("[FILTERED]")
         end
       end
     end
+  end
+end
+
+def perform_request(path)
+  (Rails.application.call env_for(path)).tap do |res|
+    # Rack-Lock doesn't release the mutex if body is not closed
+    res[2].close
   end
 end
 
