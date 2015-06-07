@@ -2,3 +2,6 @@ coverage
 pkg
 .DS_STORE
 *.log
+Gemfile.lock
+gemfiles/*.lock
+spec/dummy*/tmp

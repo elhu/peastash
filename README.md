@@ -130,7 +130,7 @@ end
 # {'request.rsolr': {'queries': 1, 'duration': 42}}
 ```
 
-The store exposed to the blocked passed to watch is thread-safe, and reset after each request. By default, the store is only shared between occurences of the same event. You can easily share the same store between different types of notifications by assigning them to the same event group:
+The store exposed to the blocked passed to watch is thread-safe, and is reset after each request. By default, the store is only shared between occurences of the same event. You can easily share the same store between different types of notifications by assigning them to the same event group:
 
 ```ruby
 Peastash.with_instance.watch('foo.notification', event_group: 'notification') do |*args, store|
