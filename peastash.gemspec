@@ -11,6 +11,7 @@ Gem::Specification.new do |gem|
   gem.description   = %q{Peastash allows you to instrument your code with the ELK stack easily.}
   gem.summary       = %q{Peastash allows you to instrument your code with the ELK stack easily.}
   gem.homepage      = "http://github.com/elhu/peastash"
+  gem.licenses      = ['MIT']
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
