@@ -21,7 +21,6 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency "logstash-event"
   gem.add_runtime_dependency "thread_safe"
 
-  gem.add_development_dependency "mime-types", '~> 2.99.1'
   gem.add_development_dependency "rake"
   gem.add_development_dependency "rspec", '~> 2.14'
   gem.add_development_dependency "rspec-rails"
