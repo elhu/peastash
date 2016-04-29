@@ -18,6 +18,9 @@ class Peastash
 
           # Setting this before calling the next middleware so it can be overriden
           request = Rack::Request.new(env)
+          if env.has_key? 'HTTP_X_REQUEST_START'
+            Peastash.with_instance.store[:time_in_queue] = ((Time.now.to_f - env['HTTP_X_REQUEST_START'].to_f) * 1000.0).round(2)
+          end
           Peastash.with_instance.store[:ip] = request.ip
         end
 

@@ -60,6 +60,19 @@ describe Peastash::Middleware do
       end
     end
 
+    context 'with the X-Request-Time header' do
+      it 'adds the time_in_queue field' do
+        expect(LogStash::Event).to receive(:new).with({
+          '@source' => Peastash::STORE_NAME,
+          '@fields' => { duration: 0, status: 200, ip: nil, time_in_queue: 0.0 },
+          '@tags' => [],
+          '@pid' => an_instance_of(Fixnum),
+        })
+        middleware = Peastash::Middleware.new(app)
+        Timecop.freeze { middleware.call env_for('/', { 'HTTP_X_REQUEST_START' => Time.now.to_f }) }
+      end
+    end
+
     context 'storing data in the rack app' do
       before :each do
         app = ->(env) do
