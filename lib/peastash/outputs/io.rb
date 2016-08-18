@@ -1,4 +1,4 @@
-require 'logger'
+require 'peastash/log_device'
 
 class Peastash
   module Outputs
@@ -10,7 +10,7 @@ class Peastash
       end
 
       def initialize(file)
-        @device = Logger::LogDevice.new(file)
+        @device = ::Peastash::LogDevice.new(file)
       end
 
       def dump(event)

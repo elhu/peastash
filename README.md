@@ -64,6 +64,8 @@ Please note that this is a global setting and cannot be set per-instance.
 #### Outputs
 
 Peastash ships with a single output: ``Peastash::Outputs::IO``. It can be initialized either by passing it a path or an IO object.
+If the argument is a path to a non-writeable file, Peastash will attempt to delete the file to re-create it with the proper permissions.
+
 Peastash can easily be extended to output to any target.
 Simply configure Peastash's output with an object that responds to the ``#dump`` method. This method will be called at the end of the ``#log`` block, with 1 argument: a ``LogStash::Event`` object that you will probably need to serialize to json.
 
