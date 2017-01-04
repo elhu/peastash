@@ -21,6 +21,7 @@ class Peastash
       yield
     rescue StandardError => e
       STDERR.puts e
+      STDERR.puts e.backtrace
       raise e unless safe?
     end
 
