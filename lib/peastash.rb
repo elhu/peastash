@@ -20,7 +20,7 @@ class Peastash
     def safely
       yield
     rescue StandardError => e
-      STDERR.puts e
+      STDERR.puts e.inspect
       STDERR.puts e.backtrace
       raise e unless safe?
     end
