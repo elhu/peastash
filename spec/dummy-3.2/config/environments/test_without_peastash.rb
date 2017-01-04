@@ -34,6 +34,5 @@ Dummy32::Application.configure do
 
   # Print deprecation notices to the stderr
   config.active_support.deprecation = :stderr
-  config.peastash.enabled = true
-  config.peastash.insert_before = ActionDispatch::Cookies
+  config.peastash.enabled = false
 end
