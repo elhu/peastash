@@ -141,7 +141,7 @@ describe Peastash::Middleware do
       end
 
       it "puts the error to STDERR for easy debugging" do
-        expect(STDERR).to receive(:puts).twice
+        expect(STDERR).to receive(:puts).exactly(4).times
         @middleware.call env_for('/')
       end
     end

@@ -133,6 +133,7 @@ describe Peastash do
         before { Peastash.safe! }
 
         it 'rescues errors silently' do
+          allow(STDERR).to receive(:puts)
           expect {
             Peastash.safely { 1 / 0 }
           }.not_to raise_error
@@ -143,7 +144,11 @@ describe Peastash do
         end
 
         it "puts the error to STDERR for easy debugging" do
-          expect(STDERR).to receive(:puts)
+          expect(STDERR).to receive(:puts).with("#<ZeroDivisionError: divided by 0>")
+          expect(STDERR).to receive(:puts) do |args|
+            expect(args.join).to include("spec/peastash_spec.rb")
+            expect(args.join).to include(":in `safely'")
+          end
           Peastash.safely { 1 / 0 }
         end
       end
@@ -152,13 +157,18 @@ describe Peastash do
         before { Peastash.unsafe! }
 
         it 'doesn\'t rescue errors silently' do
+          allow(STDERR).to receive(:puts)
           expect {
             Peastash.safely { 1 / 0 }
           }.to raise_error(ZeroDivisionError)
         end
 
         it "puts the error to STDERR for easy debugging" do
-          expect(STDERR).to receive(:puts)
+          expect(STDERR).to receive(:puts).with("#<ZeroDivisionError: divided by 0>")
+          expect(STDERR).to receive(:puts) do |args|
+            expect(args.join).to include("spec/peastash_spec.rb")
+            expect(args.join).to include(":in `safely'")
+          end
 
           expect {
             Peastash.safely { 1 / 0 }
