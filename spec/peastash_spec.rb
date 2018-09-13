@@ -37,7 +37,7 @@ describe Peastash do
           '@source' => Peastash::STORE_NAME,
           '@fields' => an_instance_of(Hash),
           '@tags' => tags,
-          '@pid' => an_instance_of(Integer),
+          '@pid' => a_kind_of(Numeric),
         })
         Peastash.with_instance.log {}
       end
@@ -48,7 +48,7 @@ describe Peastash do
           '@source' => 'foo',
           '@fields' => an_instance_of(Hash),
           '@tags' => [],
-          '@pid' => an_instance_of(Integer),
+          '@pid' => a_kind_of(Numeric),
         })
         Peastash.with_instance.log {}
       end
@@ -122,7 +122,7 @@ describe Peastash do
           '@source' => Peastash::STORE_NAME,
           '@fields' => an_instance_of(Hash),
           '@tags' => base_tags + tags,
-          '@pid' => an_instance_of(Integer),
+          '@pid' => a_kind_of(Numeric),
         })
         Peastash.with_instance.log(tags) {}
       end
@@ -192,7 +192,7 @@ describe Peastash do
           '@source' => Peastash::STORE_NAME,
           '@fields' => an_instance_of(Hash),
           '@tags' => base_tags + tags + additional_tags,
-          '@pid' => an_instance_of(Integer),
+          '@pid' => a_kind_of(Numeric),
         })
         Peastash.with_instance.log(tags) { Peastash.with_instance.tags.concat(additional_tags) }
       end

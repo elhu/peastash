@@ -54,7 +54,7 @@ describe Peastash::Middleware do
           '@source' => Peastash::STORE_NAME,
           '@fields' => { path: '/', duration: 0, status: 200, ip: nil },
           '@tags' => [],
-          '@pid' => an_instance_of(Integer),
+          '@pid' => a_kind_of(Numeric),
         })
         Timecop.freeze { @middleware.call env_for('/') }
       end
@@ -66,7 +66,7 @@ describe Peastash::Middleware do
           '@source' => Peastash::STORE_NAME,
           '@fields' => { duration: 0, status: 200, ip: nil, time_in_queue: 0.0 },
           '@tags' => [],
-          '@pid' => an_instance_of(Integer),
+          '@pid' => a_kind_of(Numeric),
         })
         middleware = Peastash::Middleware.new(app)
         Timecop.freeze { middleware.call env_for('/', { 'HTTP_X_REQUEST_START' => Time.now.to_f }) }
@@ -93,7 +93,7 @@ describe Peastash::Middleware do
           '@source' => Peastash::STORE_NAME,
           '@fields' => { scheme: 'http', duration: 0, status: 200, ip: nil },
           '@tags' => [],
-          '@pid' => an_instance_of(Integer),
+          '@pid' => a_kind_of(Numeric),
         })
         Timecop.freeze { @middleware.call env_for('/') }
       end
@@ -118,7 +118,7 @@ describe Peastash::Middleware do
           '@source' => Peastash::STORE_NAME,
           '@fields' => { duration: 0, status: 200, foo: 'foo', ip: nil },
           '@tags' => [],
-          '@pid' => an_instance_of(Integer),
+          '@pid' => a_kind_of(Numeric),
         })
         Timecop.freeze { @middleware.call env_for('/') }
       end
