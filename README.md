@@ -28,8 +28,8 @@ When the code inside the block is done running, a log entry will be created and 
 The most basic usage would look like:
 
 ```ruby
-Peastash.with_instance.log do
-  Peastash.with_instance.store[:foo] = 'bar'
+Peastash.with_instance.log do |instance|
+  instance.store[:foo] = 'bar'
 end
 # This will produce a Logstash log entry looking like this:
 # {"@source":"peastash","@fields":{"foo":"bar"},"@tags":[],"@timestamp":"2014-05-27T15:18:29.824Z","@version":"1"}
