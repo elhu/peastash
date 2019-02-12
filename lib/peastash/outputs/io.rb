@@ -9,8 +9,8 @@ class Peastash
         @@default_io
       end
 
-      def initialize(file)
-        @device = ::Peastash::LogDevice.new(file)
+      def initialize(file, **args)
+        @device = ::Peastash::LogDevice.new(file, **args)
       end
 
       def dump(event)
