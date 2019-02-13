@@ -17,8 +17,9 @@ gemfile:
 script:
   - bundle exec rspec
 before_install:
-  - 'gem uninstall bundler -x || gem uninstall bundler -a || true'
-  - 'gem install bundler -v 1.17'
+  - rvm use @global
+  - gem uninstall bundler -x || gem uninstall bundler -a || true
+  - gem install bundler -v 1.17
 matrix:
   allow_failures:
     - gemfile: gemfiles/Gemfile.rails-head
