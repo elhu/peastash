@@ -101,6 +101,8 @@ config.peastash.enabled = true
 # You can also configure Peastash from here, for example:
 config.peastash.output = Peastash::Outputs::IO.new(File.join(Rails.root, 'log', "logstash_#{Rails.env}.log"))
 config.peastash.source = Rails.application.class.parent_name
+config.peastash.before_block = ->(env, response) { Peastash.with_instance.store[:path] = Rack::Request.new(env).path }
+config.peastash.after_block = ->(env, response) { Peastash.with_instance.store[:puma_wait] = env['puma.request_body_wait'] }
 ```
 
 By default, Peastash's Rails integration will log the same parameters as the Middleware version, plus the fields in the payload of the [``process_action.action_controller``](http://edgeguides.rubyonrails.org/active_support_instrumentation.html#process_action.action_controller) notification (except the params).
