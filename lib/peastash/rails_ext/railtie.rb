@@ -23,7 +23,7 @@ class Peastash
           Peastash.with_instance.store.merge!(payload) { |key, old_val, new_val| old_val }
         end
         before_middleware = app.config.peastash[:insert_before] || ActionDispatch::ShowExceptions
-        app.config.middleware.insert_before before_middleware, Peastash::Middleware
+        app.config.middleware.insert_before before_middleware, Peastash::Middleware, app.config.peastash[:before_block], app.config.peastash[:after_block]
       end
     end
   end
