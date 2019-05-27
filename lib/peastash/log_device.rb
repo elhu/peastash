@@ -10,6 +10,10 @@ class Peastash
       STDERR.puts "[#{Time.now}][#{Process.pid}] Could not open #{filename} for writing, recreating it. Info: #{stat_data.inspect}"
       FileUtils.rm(filename)
       create_logfile(filename)
+    rescue Errno::ENOENT => e
+      temp_file = Tempfile.new([filename, 'log'])
+      STDERR.puts "[#{Time.now}][#{Process.pid}] Could not open #{filename} for writing: #{e.message}. Data will be writen in: #{temp_file.path}"
+      open_logfile(temp_file.path)
     end
   end
 end
