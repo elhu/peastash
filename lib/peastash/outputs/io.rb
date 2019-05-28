@@ -10,7 +10,9 @@ class Peastash
       end
 
       def initialize(file, *args)
-        @device = ::Peastash::LogDevice.new(file, *args)
+        dir = File.realpath(File.dirname(file))
+        name = File.basename(file)
+        @device = ::Peastash::LogDevice.new("#{dir}/#{name}", *args)
       end
 
       def dump(event)
