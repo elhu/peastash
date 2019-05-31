@@ -69,6 +69,8 @@ If the argument is a path to a non-writeable file, Peastash will attempt to dele
 Peastash can easily be extended to output to any target.
 Simply configure Peastash's output with an object that responds to the ``#dump`` method. This method will be called at the end of the ``#log`` block, with 1 argument: a ``LogStash::Event`` object that you will probably need to serialize to json.
 
+In case the directory doesn't exist, peastash won't crash, a tempfile will be created in /tmp (or $TMPDIR) and the data will be stored in this file. The full path of this tempfile will be printed to STDERR so it can easily be retrieved.
+
 ### What if I want to use it in my rack app?
 
 There's a middleware for that! Simply add the following somewhere:
