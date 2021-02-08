@@ -1,15 +1,22 @@
 version: 2.1
 orbs:
-  ruby: circleci/ruby@0.1.2 
+  ruby: circleci/ruby@0.1.2
 
 jobs:
-  build:
+  ruby2-6:
     docker:
       - image: circleci/ruby:2.6.3-stretch-node
     executor: ruby/default
+    environment:
+      BUNDLE_GEMFILE: gemfiles/Gemfile.rails-4.2.x
     steps:
       - checkout
       - run:
           name: Which bundler?
           command: bundle -v
       - ruby/bundle-install
+      - run: bundle exec rspec
+
+  build:
+    jobs:
+      - ruby2-6
