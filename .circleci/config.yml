@@ -38,5 +38,5 @@ workflows:
       - test:
           matrix:
             parameters:
-              ruby: ["2.6"]
-              rails: ["4.2.x"]
+              ruby: ["2.5", "2.6", "2.7"]
+              rails: ["4.2.x", "5.2.x", "head"]
