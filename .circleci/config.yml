@@ -32,7 +32,7 @@ jobs:
       - ruby/bundle-install
       - run: bundle exec rspec
 
-worflows:
+workflows:
   all-tests:
     jobs:
       - test:
