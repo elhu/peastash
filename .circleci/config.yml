@@ -17,7 +17,7 @@ jobs:
     parameters:
       ruby:
         type: string
-      node-version:
+      rails:
         type: string
     docker:
       - image: circleci/ruby:<< parameters.ruby >>
@@ -29,7 +29,7 @@ jobs:
       - run:
           name: Which bundler?
           command: bundle -v
-      - ruby/bundle-install
+      - run: bundle install
       - run: bundle exec rspec
 
 workflows:
