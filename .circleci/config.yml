@@ -3,12 +3,17 @@ orbs:
   ruby: circleci/ruby@0.1.2
 
 jobs:
-  ruby2-6:
+  test:
+    parameters:
+      ruby:
+        type: string
+      node-version:
+        type: string
     docker:
-      - image: circleci/ruby:2.6.3-stretch-node
+      - image: circleci/ruby:<< parameters.ruby >>
     executor: ruby/default
     environment:
-      BUNDLE_GEMFILE: gemfiles/Gemfile.rails-4.2.x
+      BUNDLE_GEMFILE: gemfiles/Gemfile.rails-<< parameters.rails >>
     steps:
       - checkout
       - run:
@@ -17,6 +22,11 @@ jobs:
       - ruby/bundle-install
       - run: bundle exec rspec
 
-  build:
+worflows:
+  all-tests:
     jobs:
-      - ruby2-6
+      - test:
+          matrix:
+            parameters:
+              ruby: ["2.6"]
+              rails: ["4.2.x"]
