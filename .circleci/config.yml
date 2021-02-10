@@ -26,18 +26,18 @@ workflows:
   all-tests:
     jobs:
       - test:
-        name: "rails 4.2 / ruby 2.5"
-        ruby: "2.5"
-        rails: "4.2.x"
+          name: "rails 4.2 / ruby 2.5"
+          ruby: "2.5"
+          rails: "4.2.x"
       - test:
-        name: "rails 5.2 / ruby 2.6"
-        ruby: "2.6"
-        rails: "5.2.x"
+          name: "rails 5.2 / ruby 2.6"
+          ruby: "2.6"
+          rails: "5.2.x"
       - test:
-        name: "rails 6.0 / ruby 2.7"
-        ruby: "2.7"
-        rails: "6.0.x"
+          name: "rails 6.0 / ruby 2.7"
+          ruby: "2.7"
+          rails: "6.0.x"
       - test:
-        name: "rails 6.1 / ruby 3.0"
-        ruby: "3.0"
-        rails: "6.1.x"
+          name: "rails 6.1 / ruby 3.0"
+          ruby: "3.0"
+          rails: "6.1.x"
