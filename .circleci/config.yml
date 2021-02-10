@@ -3,16 +3,6 @@ orbs:
   ruby: circleci/ruby@1.1.2
 
 jobs:
-  build:
-    docker:
-      - image: circleci/ruby:2.6
-    steps:
-      - checkout
-      - run:
-          name: Which bundler?
-          command: bundle -v
-      - run: bundle install
-
   test:
     parameters:
       ruby:
