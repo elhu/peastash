@@ -1,0 +1,32 @@
+version: 2.1
+orbs:
+  ruby: circleci/ruby@1.1.2
+
+jobs:
+  test:
+    parameters:
+      ruby:
+        type: string
+      rails:
+        type: string
+    docker:
+      - image: circleci/ruby:<< parameters.ruby >>-node-browsers
+    executor: ruby/default
+    environment:
+      BUNDLE_GEMFILE: gemfiles/Gemfile.rails-<< parameters.rails >>
+    steps:
+      - checkout
+      - run:
+          name: Which bundler?
+          command: bundle -v
+      - run: bundle install
+      - run: bundle exec rspec
+
+workflows:
+  all-tests:
+    jobs:
+      - test:
+          matrix:
+            parameters:
+              ruby: ["2.5", "2.6", "2.7"]
+              rails: ["5.2.x"]

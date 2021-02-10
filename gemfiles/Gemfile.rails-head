@@ -2,5 +2,5 @@ source 'https://rubygems.org'
 
 gemspec :path => '..'
 
-gem 'rails', github: 'rails/rails'
+gem 'rails', github: 'rails/rails', branch: 'main'
 gem 'mime-types', '~> 2.99.1'

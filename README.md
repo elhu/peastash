@@ -1,4 +1,4 @@
-# Peastash [![build status](https://travis-ci.org/elhu/peastash.png?branch=master)](https://travis-ci.org/elhu/peastash) [![Code Climate](https://codeclimate.com/github/elhu/peastash.png)](https://codeclimate.com/github/elhu/peastash)
+# Peastash [![build status](https://circleci.com/gh/elhu/peastash.svg?style=svg)](https://circleci.com/gh/elhu/peastash) [![Code Climate](https://codeclimate.com/github/elhu/peastash.png)](https://codeclimate.com/github/elhu/peastash)
 
 ## Description
 
