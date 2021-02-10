@@ -26,7 +26,14 @@ workflows:
   all-tests:
     jobs:
       - test:
-          matrix:
-            parameters:
-              ruby: ["2.5", "2.6", "2.7"]
-              rails: ["5.2.x"]
+        ruby: "2.5"
+        rails: "4.2.x"
+      - test:
+        ruby: "2.6"
+        rails: "5.2.x"
+      - test:
+        ruby: "2.7"
+        rails: "6.0.x"
+      - test:
+        ruby: "3.0"
+        rails: "6.1.x"
