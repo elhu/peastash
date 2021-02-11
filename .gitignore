@@ -6,3 +6,4 @@ pkg
 Gemfile.lock
 gemfiles/*.lock
 spec/dummy*/tmp
+tmp/
