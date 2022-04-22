@@ -94,7 +94,8 @@ class Peastash
   def tags
     Peastash.safely do
       configure! unless configured?
-      Thread.current[@store_name + ":tags"] ||= []
+      Thread.current[instance_name] ||= Hash.new
+      Thread.current[instance_name][@store_name + ":tags"] ||= []
     end
   end
 

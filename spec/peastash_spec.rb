@@ -205,6 +205,11 @@ describe Peastash do
             Peastash.with_instance.log { Peastash.with_instance.tags << additional_tags }
           end.not_to change { Peastash.with_instance.tags }
         end
+
+        it 'does not share tags between instances' do
+          Peastash.with_instance.tags << 'global'
+          expect(Peastash.with_instance(:test).tags).not_to include('global')
+        end
       end
     end
 
