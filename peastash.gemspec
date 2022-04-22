@@ -22,7 +22,7 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency "thread_safe"
 
   gem.add_development_dependency "rake"
-  gem.add_development_dependency "rspec", '~> 2.14'
+  gem.add_development_dependency "rspec", '~> 3.11'
   gem.add_development_dependency "rspec-rails"
   gem.add_development_dependency "rack-test"
   gem.add_development_dependency "simplecov", '~> 0.7.1'
