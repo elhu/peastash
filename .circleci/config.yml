@@ -10,7 +10,7 @@ jobs:
       rails:
         type: string
     docker:
-      - image: circleci/ruby:<< parameters.ruby >>-node-browsers
+      - image: circleci/ruby:<< parameters.ruby >>-node-browsers-legacy
     executor: ruby/default
     environment:
       BUNDLE_GEMFILE: gemfiles/Gemfile.rails-<< parameters.rails >>
@@ -41,3 +41,7 @@ workflows:
           name: "rails 6.1 / ruby 3.0"
           ruby: "3.0"
           rails: "6.1.x"
+      - test:
+          name: "rails 7.0 / ruby 3.0"
+          ruby: "3.0"
+          rails: "7.0.x"
