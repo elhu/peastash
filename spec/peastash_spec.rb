@@ -196,6 +196,16 @@ describe Peastash do
         })
         Peastash.with_instance.log(tags) { Peastash.with_instance.tags.concat(additional_tags) }
       end
+
+      describe 'tags scoping' do
+        it 'doesn\'t add additional tags to the instance itself' do
+          base_tags = %w(foo bar)
+          additional_tags = 'qux'
+          expect do
+            Peastash.with_instance.log { Peastash.with_instance.tags << additional_tags }
+          end.not_to change { Peastash.with_instance.tags }
+        end
+      end
     end
 
   end

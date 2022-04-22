@@ -87,6 +87,7 @@ class Peastash
         event = build_event(@source, tags)
         @output.dump(event)
       end
+      tags.clear
     end
   end
 
