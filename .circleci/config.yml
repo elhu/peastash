@@ -10,7 +10,7 @@ jobs:
       rails:
         type: string
     docker:
-      - image: circleci/ruby:<< parameters.ruby >>-node-browsers
+      - image: circleci/ruby:<< parameters.ruby >>-node-browsers-legacy
     executor: ruby/default
     environment:
       BUNDLE_GEMFILE: gemfiles/Gemfile.rails-<< parameters.rails >>
