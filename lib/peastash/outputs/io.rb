@@ -9,7 +9,7 @@ class Peastash
         @@default_io
       end
 
-      def initialize(file, *args)
+      ruby2_keywords def initialize(file, *args)
         if file.is_a?(String)
           # Rewrite symlink path to realpath for instance
           # /home/app/releases/20190528155050/log/logstash.log -> /home/app/shared/log/logstash.log
