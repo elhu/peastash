@@ -1,4 +1,5 @@
 require 'peastash/log_device'
+require 'ruby2_keywords'
 
 class Peastash
   module Outputs
