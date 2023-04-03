@@ -196,6 +196,21 @@ describe Peastash do
         })
         Peastash.with_instance.log(tags) { Peastash.with_instance.tags.concat(additional_tags) }
       end
+
+      describe 'tags scoping' do
+        it 'doesn\'t add additional tags to the instance itself' do
+          base_tags = %w(foo bar)
+          additional_tags = 'qux'
+          expect do
+            Peastash.with_instance.log { Peastash.with_instance.tags << additional_tags }
+          end.not_to change { Peastash.with_instance.tags }
+        end
+
+        it 'does not share tags between instances' do
+          Peastash.with_instance.tags << 'global'
+          expect(Peastash.with_instance(:test).tags).not_to include('global')
+        end
+      end
     end
 
   end
